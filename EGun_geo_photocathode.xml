@@ -27,3 +27,58 @@
 
 
 </geometry>
+
+
+<geometry>
+   <cylinder_surface 
+    name="cylinder_surface" 
+    z1="-0.3" 
+    z2="0.4" 
+    r="0.55"
+    longitudinal_mesh_count="15" 
+    longitudinal_mesh_power="2."
+    axial_mesh_count="32"/>
+
+    <cylinder_space 
+    name="cylinder_space" 
+    z1="-0.3" 
+    z2="0.4" 
+    r="0.55"
+    longitudinal_mesh_count="15" 
+    longitudinal_mesh_power="2."
+    axial_mesh_count="32"/>
+
+    <disk_surface name="disk_surface" z="0.4" r="0.55" radial_mesh_count="15" radial_mesh_power="2" axial_mesh_count="32"/>
+    <shell_circle_surface name="shell_circle_surface" angle_start="0" angle_stop="90" shell_mesh_count="32" shell_mesh_power="6">
+        <circle x="0" y="-0.5" radius="0.55" circle_mesh_count="32"/>
+    </shell_circle_surface>
+
+
+    <space name="assembly"> 
+        <surface name="disk" node="disk_surface"/>
+        <surface name="Upper_cylinder" node="cylinder_surface">
+            <transformation displacement="0. 0. 0.7"/>
+        </surface>
+        
+
+
+    </space>
+
+    <space name="assembly_2"> 
+        <surface name="disk" node="disk_surface"/>
+        <space name="Upper_cylinder" node="cylinder_space">
+            <transformation displacement="0. 0. 0.7"/>
+        </space>
+        <surface name="fillet_radius" node="shell_circle_surface">
+            <transformation>
+                <displacement x="0." y="0." z="0.7"/>
+                <rotation x="1" y="0" z="0" angle="90">
+            </transformation>
+            
+        </surface>
+        
+
+
+    </space>
+
+</geometry>
