@@ -3,7 +3,7 @@
     <define name="photocathode_radius" value="{5.e-4}"/>
     <define name="photocathode_height" value="{5.e-3}"/>
 
-    <define name="frontelectrode_radius" value="{1.e-3}"/>
+    <define name="frontelectrode_radius" value="{5.e-4}"/>
     <define name="frontelectrode_height" value="{2.5e-3}"/>
 
     <define name="rs_egun_curvature_n" value="20"/>
@@ -34,33 +34,50 @@
                           axial_mesh_count="[rs_egun_arc_count]"/>
         <disk_surface name="frontelectrode_disk_surface" z="0" r="[frontelectrode_radius]" radial_mesh_count="14" radial_mesh_power="5" axial_mesh_count="20"/>
 
+        
+
         <space name="photocathode_assembly">
+                   
+            <surface name="photocathode_disk_surface_assembled_top" node="photocathode_disk_surface">
+                <transformation displacement="0. 0. 0"/>
+            </surface>
+
             <surface name="photocathode_surface_assembled" node="photocathode_surface">
                 <transformation displacement="0. 0. 0."/>
             </surface>
         
-            <surface name="photocathode_disk_surface_assembled" node="photocathode_disk_surface">
-                <transformation displacement="0. 0. 0"/>
-            </surface>         
+<!-- distance between photovathode and front electrode is 1 mm. Placing front electrode on the top of the photocathode-->
 
 
-        </space>
-
-       
-        <space name="frontelectrode_assembly">
-            <surface name="frontelectrode_disk_surface_assembled" node="frontelectrode_disk_surface">
-                <transformation displacement="0. 0. 0." rotation_euler="90. 90. 90."/>
+            <transformation displacement="{1.e-3} 0. {-0.00025}" rotation_euler="90. 90. 90."/>
+            <surface name="frontelectrode_disk_surface_assembled_bottom" node="frontelectrode_disk_surface">
+                <transformation displacement="0. 0. 0."/>
             </surface>
             <surface name="frontelectrode_surface_assembled" node="frontelctrode_surface">
                 <transformation displacement="0. 0. 0."/>
             </surface>
         
-            <surface name="frontelectrode_disk_surface_assembled" node="frontelectrode_disk_surface">
+            <surface name="frontelectrode_disk_surface_assembled_top" node="frontelectrode_disk_surface">
                 <transformation displacement="0. 0. {[frontelectrode_height]}"/>
-            </surface>         
+            </surface>
+
+        <transformation displacement="0. 0. {-0.0005}" rotation_euler="{-180.} {-180.} {-180.}"/>
+            <surface name="frontelectrode_disk_surface_assembled_bottom" node="frontelectrode_disk_surface">
+                <transformation displacement="0. 0. 0."/>
+            </surface>
+            <surface name="frontelectrode_surface_assembled" node="frontelctrode_surface">
+                <transformation displacement="0. 0. 0."/>
+            </surface>
+        
+            <surface name="frontelectrode_disk_surface_assembled_top" node="frontelectrode_disk_surface">
+                <transformation displacement="0. 0. {[frontelectrode_height]}"/>
+            </surface>          
 
 
         </space>
+
+       
+        
 	 
 
 
@@ -71,3 +88,8 @@
 
 
 </geometry>
+
+
+
+
+
