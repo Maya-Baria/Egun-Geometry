@@ -1,0 +1,149 @@
+<geometry>
+
+    <!-- ===========================
+         GLOBAL PARAMETERS
+         =========================== -->
+
+    <!-- Photocathode -->
+    <define name="photocathode_radius"  value="{5.e-4}"/>
+    <define name="photocathode_height" value="{5.e-3}"/>
+
+    <!-- Front electrode -->
+    <define name="frontelectrode_radius"  value="{5.e-4}"/>
+    <define name="frontelectrode_height" value="{2.5e-3}"/>
+
+    <!-- Radial distance of two symmetric electrodes from z-axis -->
+    <define name="electrode_offset_xy" value="{1.e-3}"/>
+
+    <!-- These offsets reproduce the working geometry you found -->
+    <define name="fe_z_offset_main" value="{-0.00025}"/>
+    <define name="fe_z_offset_secondary" value="{-0.0005}"/>
+
+    <!-- Mesh -->
+    <define name="rs_egun_curvature_n" value="20"/>
+    <define name="rs_egun_opening_curvature_n" value="9"/>
+    <define name="rs_egun_arc_count" value="25"/>
+    <define name="rs_egun_mesh_scale" value="5"/>
+    <define name="rs_egun_mesh_power" value="1"/>
+
+
+    <!-- ===========================
+         BASE SURFACES DEFINITION
+         =========================== -->
+
+    <cylinder_surface name="photocathode_surface" 
+        z1="0."
+        z2="{[photocathode_height]/2}"
+        r="[photocathode_radius]"
+        longitudinal_mesh_count="[rs_egun_mesh_scale]"
+        longitudinal_mesh_power="[rs_egun_mesh_power]"
+        axial_mesh_count="[rs_egun_arc_count]"
+    />
+
+    <disk_surface name="photocathode_disk_surface"
+        z="0"
+        r="[photocathode_radius]"
+        radial_mesh_count="14"
+        radial_mesh_power="5"
+        axial_mesh_count="20"
+    />
+
+    <cylinder_surface name="frontelctrode_surface" 
+        z1="0."
+        z2="[frontelectrode_height]"
+        r="[frontelectrode_radius]"
+        longitudinal_mesh_count="[rs_egun_mesh_scale]"
+        longitudinal_mesh_power="[rs_egun_mesh_power]"
+        axial_mesh_count="[rs_egun_arc_count]"
+    />
+
+    <disk_surface name="frontelectrode_disk_surface"
+        z="0"
+        r="[frontelectrode_radius]"
+        radial_mesh_count="14"
+        radial_mesh_power="5"
+        axial_mesh_count="20"
+    />
+
+
+
+    <!-- ===========================
+         ASSEMBLY 1: PHOTOCATHODE
+         =========================== -->
+    <space name="photocathode_assembly">
+
+        <surface name="photocathode_disk_surface_assembled"
+            node="photocathode_disk_surface">
+            <transformation displacement="0. 0. 0." />
+        </surface>
+
+        <surface name="photocathode_surface_assembled"
+            node="photocathode_surface">
+            <transformation displacement="0. 0. 0." />
+        </surface>
+
+    </space>
+
+
+
+    <!-- ===========================
+         ASSEMBLY 2: FRONT ELECTRODE +X
+         =========================== -->
+    <space name="frontelectrode_plusX_assembly">
+
+        <!-- Base transformation for the whole electrode -->
+        <transformation
+            displacement="[electrode_offset_xy] 0. [fe_z_offset_main]"
+            rotation_euler="90. 90. 90."
+        />
+
+        <surface name="front_plusX_disk_bottom"
+            node="frontelectrode_disk_surface">
+            <transformation displacement="0. 0. 0."/>
+        </surface>
+
+        <surface name="front_plusX_cylinder"
+            node="frontelctrode_surface">
+            <transformation displacement="0. 0. 0."/>
+        </surface>
+
+        <surface name="front_plusX_disk_top"
+            node="frontelectrode_disk_surface">
+            <transformation displacement="0. 0. [frontelectrode_height]"/>
+        </surface>
+
+    </space>
+
+
+
+    <!-- ===========================
+         ASSEMBLY 3: FRONT ELECTRODE –X
+         =========================== -->
+    <space name="frontelectrode_minusX_assembly">
+
+        <!-- Mirror copy: only X displacement changes sign -->
+        <transformation
+            displacement="-[electrode_offset_xy] 0. [fe_z_offset_main]"
+            rotation_euler="90. 90. 90."
+        />
+
+        <surface name="front_minusX_disk_bottom"
+            node="frontelectrode_disk_surface">
+            <transformation displacement="0. 0. 0."/>
+        </surface>
+
+        <surface name="front_minusX_cylinder"
+            node="frontelctrode_surface">
+            <transformation displacement="0. 0. 0."/>
+        </surface>
+
+        <surface name="front_minusX_disk_top"
+            node="frontelectrode_disk_surface">
+            <transformation displacement="0. 0. [frontelectrode_height]"/>
+        </surface>
+
+    </space>
+
+
+
+</geometry>
