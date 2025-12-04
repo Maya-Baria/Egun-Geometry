@@ -1,101 +1,80 @@
 <geometry>
 
-    <!-- ========== PARAMETERS ========== -->
-    <define name="photocathode_radius"  value="{5.e-4}"/>
+    <!--==========================
+         Define parameters
+    ==========================-->
+    <define name="photocathode_radius" value="{5.e-4}"/>
     <define name="photocathode_height" value="{5.e-3}"/>
 
-    <define name="frontelectrode_radius"  value="{5.e-4}"/>
+    <define name="frontelectrode_radius" value="{1.e-3}"/>
     <define name="frontelectrode_height" value="{2.5e-3}"/>
 
-    <!-- distance from photocathode axis in XY plane -->
-    <define name="electrode_offset" value="{1.e-3}"/>
-
-    <!-- mesh parameters (kept from your original) -->
+    <define name="rs_egun_curvature_n" value="20"/>
+    <define name="rs_egun_opening_curvature_n" value="9"/>
     <define name="rs_egun_arc_count" value="25"/>
     <define name="rs_egun_mesh_scale" value="5"/>
     <define name="rs_egun_mesh_power" value="1"/>
 
-    <!-- ========== BASE SURFACES ========== -->
-    <cylinder_surface name="photocathode_surface"
-                      z1="0."
+    <!--==========================
+         Photocathode surfaces
+    ==========================-->
+    <cylinder_surface name="photocathode_surface" 
+                      z1="0." 
                       z2="{[photocathode_height]/2}"
-                      r="[photocathode_radius]"
-                      longitudinal_mesh_count="[rs_egun_mesh_scale]"
-                      longitudinal_mesh_power="[rs_egun_mesh_power]"
+                      r="[photocathode_radius]" 
+                      longitudinal_mesh_count="[rs_egun_mesh_scale]" 
+                      longitudinal_mesh_power="[rs_egun_mesh_power]"        
                       axial_mesh_count="[rs_egun_arc_count]"/>
 
-    <disk_surface name="photocathode_disk_surface"
-                  z="0"
-                  r="[photocathode_radius]"
-                  radial_mesh_count="14"
-                  radial_mesh_power="5"
+    <disk_surface name="photocathode_disk_surface" z="0" 
+                  r="[photocathode_radius]" 
+                  radial_mesh_count="14" radial_mesh_power="5" 
                   axial_mesh_count="20"/>
 
-    <cylinder_surface name="frontelectrode_surface"
-                      z1="0."
-                      z2="[frontelectrode_height]"
-                      r="[frontelectrode_radius]"
-                      longitudinal_mesh_count="[rs_egun_mesh_scale]"
-                      longitudinal_mesh_power="[rs_egun_mesh_power]"
-                      axial_mesh_count="[rs_egun_arc_count]"/>
-
-    <disk_surface name="frontelectrode_disk_surface"
-                  z="0"
-                  r="[frontelectrode_radius]"
-                  radial_mesh_count="14"
-                  radial_mesh_power="5"
-                  axial_mesh_count="20"/>
-
-    <!-- ========== SINGLE SPACE WITH ALL 3 BODIES ========== -->
-    <space name="egun_assembly">
-
-        <!-- ---------- Photocathode: centered on Z axis ---------- -->
-        <surface name="photocathode_disk_asm" node="photocathode_disk_surface">
+    <space name="photocathode_assembly">
+        <surface name="photocathode_surface_assembled" node="photocathode_surface">
             <transformation displacement="0. 0. 0."/>
         </surface>
 
-        <surface name="photocathode_cyl_asm" node="photocathode_surface">
-            <transformation displacement="0. 0. 0."/>
-        </surface>
-
-
-        <!-- ---------- Front electrode: +X side (mirror 1) ----------
-             We rotate each electrode so its cylinder axis lies in the XY plane.
-             rotation_euler="0. 90. 0." rotates the cylinder to lie along +X.
-             The whole electrode is translated by +electrode_offset in X.
-             Disk surfaces use local displacements (along electrode local axis).
-        -->
-        <transformation displacement="[electrode_offset] 0. 0." rotation_euler="0. 90. 0." />
-
-        <surface name="fe_plus_disk_bottom" node="frontelectrode_disk_surface">
-            <transformation displacement="0. 0. 0."/>
-        </surface>
-
-        <surface name="fe_plus_cyl" node="frontelectrode_surface">
-            <transformation displacement="0. 0. 0."/>
-        </surface>
-
-        <surface name="fe_plus_disk_top" node="frontelectrode_disk_surface">
-            <transformation displacement="0. 0. [frontelectrode_height]"/>
-        </surface>
-
-
-        <!-- ---------- Front electrode: -X side (mirror 2) ----------
-             Mirror copy: same rotation, opposite X displacement.
-        -->
-        <transformation displacement="-[electrode_offset] 0. 0." rotation_euler="0. 90. 0." />
-
-        <surface name="fe_minus_disk_bottom" node="frontelectrode_disk_surface">
-            <transformation displacement="0. 0. 0."/>
-        </surface>
-
-        <surface name="fe_minus_cyl" node="frontelectrode_surface">
-            <transformation displacement="0. 0. 0."/>
-        </surface>
-
-        <surface name="fe_minus_disk_top" node="frontelectrode_disk_surface">
-            <transformation displacement="0. 0. [frontelectrode_height]"/>
-        </surface>
-
+        <surface name="photocathode_disk_surface_assembled" node="photocathode_disk_surface">
+            <transformation displacement="0. 0. 0"/>
+        </surface>         
     </space>
+
+    <!--==========================
+         Frontelectrode surfaces
+         Rotated perpendicular to Z-axis
+         Shifted 1 mm away from photocathode
+    ==========================-->
+    <cylinder_surface name="frontelctrode_surface" 
+                      z1="0." 
+                      z2="[frontelectrode_height]"
+                      r="[frontelectrode_radius]" 
+                      longitudinal_mesh_count="[rs_egun_mesh_scale]" 
+                      longitudinal_mesh_power="[rs_egun_mesh_power]"        
+                      axial_mesh_count="[rs_egun_arc_count]"/>
+
+    <disk_surface name="frontelectrode_disk_surface" z="0" 
+                  r="[frontelectrode_radius]" 
+                  radial_mesh_count="14" radial_mesh_power="5" 
+                  axial_mesh_count="20"/>
+
+    <space name="frontelectrode_assembly">
+        <!-- Shift 1 mm away from photocathode surface + rotate perpendicular to Z -->
+        <transformation displacement="0.0015 0. 0." rotation_euler="0. 90. 0." />
+
+        <surface name="frontelectrode_surface_assembled" node="frontelctrode_surface">
+            <transformation displacement="0. 0. 0."/>
+        </surface>
+
+        <surface name="frontelectrode_disk_surface_assembled_bottom" node="frontelectrode_disk_surface">
+            <transformation displacement="0. 0. 0."/>
+        </surface>
+
+        <surface name="frontelectrode_disk_surface_assembled_top" node="frontelectrode_disk_surface">
+            <transformation displacement="0. 0. [frontelectrode_height]"/>
+        </surface>
+    </space>
+
 </geometry>
+
