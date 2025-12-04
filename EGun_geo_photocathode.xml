@@ -1,84 +1,73 @@
-
-
 <geometry>
 
-   <cylinder_surface 
-    name="cylinder_surface" 
-    z1="-0.3" 
-    z2="0.4" 
-    r="0.55"
-    longitudinal_mesh_count="15" 
-    longitudinal_mesh_power="2."
-    axial_mesh_count="32"/>
+    <define name="photocathode_radius" value="{5.e-4}"/>
+    <define name="photocathode_height" value="{5.e-3}"/>
 
-    <disk_surface
-    name="cylinder_top"
-    z="0.4"
-    r="0.55"
-    radial_mesh_count="20"
-    radial_mesh_power="2."
-    annular_mesh_count="32"/>
+    <define name="frontelectrode_radius" value="{1.e-3}"/>
+    <define name="frontelectrode_height" value="{2.5e-3}"/>
 
-    <closed_path_surface name="closed_cylinder">
-        <surface name="cylinder_surface"/>
-        <surface name="cylinder_top"/>
-    </closed_path_surface>
+    <define name="rs_egun_curvature_n" value="20"/>
+	<define name="rs_egun_opening_curvature_n" value="9"/>
+	<define name="rs_egun_arc_count" value="25"/>
+	<define name="rs_egun_mesh_scale" value="5"/>
+	<define name="rs_egun_mesh_power" value="1"/>
 
+    
+        <cylinder_surface name="photocathode_surface" 
+                          z1="0." 
+                          z2="{[photocathode_height]/2}"
+                          r="[photocathode_radius]" 
+                          longitudinal_mesh_count="[rs_egun_mesh_scale]" 
+                          longitudinal_mesh_power="[rs_egun_mesh_power]"        
+                          axial_mesh_count="[rs_egun_arc_count]"/>
 
+	
 
-</geometry>
+        <disk_surface name="photocathode_disk_surface" z="0" r="[photocathode_radius]" radial_mesh_count="14" radial_mesh_power="5" axial_mesh_count="20"/>
 
+        <cylinder_surface name="frontelctrode_surface" 
+                          z1="0." 
+                          z2="[frontelectrode_height]"
+                          r="[frontelectrode_radius]" 
+                          longitudinal_mesh_count="[rs_egun_mesh_scale]" 
+                          longitudinal_mesh_power="[rs_egun_mesh_power]"        
+                          axial_mesh_count="[rs_egun_arc_count]"/>
+        <disk_surface name="frontelectrode_disk_surface" z="0" r="[frontelectrode_radius]" radial_mesh_count="14" radial_mesh_power="5" axial_mesh_count="20"/>
 
-<geometry>
-   <cylinder_surface 
-    name="cylinder_surface" 
-    z1="-0.3" 
-    z2="0.4" 
-    r="0.55"
-    longitudinal_mesh_count="15" 
-    longitudinal_mesh_power="2."
-    axial_mesh_count="32"/>
-
-    <cylinder_space 
-    name="cylinder_space" 
-    z1="-0.3" 
-    z2="0.4" 
-    r="0.55"
-    longitudinal_mesh_count="15" 
-    longitudinal_mesh_power="2."
-    axial_mesh_count="32"/>
-
-    <disk_surface name="disk_surface" z="0.4" r="0.55" radial_mesh_count="15" radial_mesh_power="2" axial_mesh_count="32"/>
-    <shell_circle_surface name="shell_circle_surface" angle_start="0" angle_stop="90" shell_mesh_count="32" shell_mesh_power="6">
-        <circle x="0" y="-0.5" radius="0.55" circle_mesh_count="32"/>
-    </shell_circle_surface>
-
-
-    <space name="assembly"> 
-        <surface name="disk" node="disk_surface"/>
-        <surface name="Upper_cylinder" node="cylinder_surface">
-            <transformation displacement="0. 0. 0.7"/>
-        </surface>
+        <space name="photocathode_assembly">
+            <surface name="photocathode_surface_assembled" node="photocathode_surface">
+                <transformation displacement="0. 0. 0."/>
+            </surface>
         
+            <surface name="photocathode_disk_surface_assembled" node="photocathode_disk_surface">
+                <transformation displacement="0. 0. 0"/>
+            </surface>         
 
 
-    </space>
-
-    <space name="assembly_2"> 
-        <surface name="disk" node="disk_surface"/>
-        <space name="Upper_cylinder" node="cylinder_space">
-            <transformation displacement="0. 0. 0.7"/>
         </space>
-        <surface name="fillet_radius" node="shell_circle_surface">
-            <transformation>
-                <displacement x="0." y="0." z="0.7"/>
-                <rotation x="1" y="0" z="0" angle="90">
-            </transformation>
-            
-        </surface>
+
+       
+        <space name="frontelectrode_assembly">
+            <surface name="frontelectrode_disk_surface_assembled" node="frontelectrode_disk_surface">
+                <transformation displacement="0. 0. 0." rotation_euler="90. 90. 90."/>
+            </surface>
+            <surface name="frontelectrode_surface_assembled" node="frontelctrode_surface">
+                <transformation displacement="0. 0. 0."/>
+            </surface>
         
+            <surface name="frontelectrode_disk_surface_assembled" node="frontelectrode_disk_surface">
+                <transformation displacement="0. 0. {[frontelectrode_height]}"/>
+            </surface>         
 
 
-    </space>
+        </space>
+	 
+
+
+
+    
+
+
+
 
 </geometry>
